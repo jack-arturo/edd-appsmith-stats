@@ -24,10 +24,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "RenewalRatesAvgLast12.rates",
     "name": "rates",
     "pageId": "Renewals and Cancellations",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

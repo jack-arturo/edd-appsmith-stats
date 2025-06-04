@@ -27,10 +27,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "Color.hslToHex",
     "name": "hslToHex",
     "pageId": "Customers and Revenue",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

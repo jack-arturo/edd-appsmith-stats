@@ -24,10 +24,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "currentDate.date",
     "name": "date",
     "pageId": "MRR and Growth",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

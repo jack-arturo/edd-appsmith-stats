@@ -26,10 +26,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "Color.hexToHsl",
     "name": "hexToHsl",
     "pageId": "Sites stats",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

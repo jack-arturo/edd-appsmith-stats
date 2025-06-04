@@ -23,9 +23,9 @@
       "pluginId": "mysql-plugin"
     },
     "dynamicBindingPathList": [],
-    "executeOnLoad": false,
     "name": "RefundedRevenuebyMonth",
     "pageId": "Refunds",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

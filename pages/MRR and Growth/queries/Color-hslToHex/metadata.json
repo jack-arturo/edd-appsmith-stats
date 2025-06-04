@@ -27,10 +27,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "Color.hslToHex",
     "name": "hslToHex",
     "pageId": "MRR and Growth",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

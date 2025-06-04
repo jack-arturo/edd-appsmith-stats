@@ -27,10 +27,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "Numbers.formatCurrency",
     "name": "formatCurrency",
     "pageId": "MRR and Growth",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

@@ -27,10 +27,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "Color.hexToHsl",
     "name": "hexToHsl",
     "pageId": "Refunds",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

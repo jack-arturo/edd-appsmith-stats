@@ -27,10 +27,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "Numbers.formatCurrency",
     "name": "formatCurrency",
     "pageId": "Renewals and Cancellations",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

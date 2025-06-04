@@ -24,10 +24,10 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "fullyQualifiedName": "CalcGrowthRate.netMRR",
     "name": "netMRR",
     "pageId": "MRR and Growth",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }
