@@ -9,5 +9,5 @@ LEFT JOIN wp_gf_entry_meta m ON m.meta_value = l.license_key AND m.meta_key = 4
 LEFT JOIN wp_gf_entry_meta m2 ON m2.entry_id = m.entry_id AND m2.meta_key = 3 AND m2.meta_value = 'Technical Support'
 LEFT JOIN wp_gf_entry s ON s.id = m.entry_id
 WHERE l.date_created BETWEEN '2018-01-01' 
-AND STR_TO_DATE(CONCAT(YEAR(CURDATE()) - 1, '-12-31'), '%Y-%m-%d')
+AND STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-12-31'), '%Y-%m-%d')
 GROUP BY YEAR(l.date_created);

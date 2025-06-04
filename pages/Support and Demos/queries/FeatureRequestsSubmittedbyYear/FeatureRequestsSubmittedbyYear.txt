@@ -8,7 +8,6 @@ SELECT
         WHERE inner_pm.meta_key = 'sfr_status'
         AND inner_pm.meta_value = 'completed'
         AND YEAR(inner_wp_posts.post_modified) = YEAR(wp_posts.post_date)
-        AND YEAR(inner_wp_posts.post_modified) < YEAR(CURDATE())
     ) AS completed_posts
 FROM 
     wp_posts
@@ -18,8 +17,6 @@ WHERE
     wp_posts.post_type = 'cpt_feature_requests'
     AND pm.meta_key = 'sfr_status'
     AND pm.meta_value != 'declined'
-    AND YEAR(wp_posts.post_date) < YEAR(CURDATE())
-    AND YEAR(wp_posts.post_modified) < YEAR(CURDATE())
 GROUP BY 
     YEAR(wp_posts.post_date)
 ORDER BY 
