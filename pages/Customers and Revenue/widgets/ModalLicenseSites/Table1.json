@@ -104,7 +104,7 @@
       "allowCellWrapping": false,
       "cellBackground": "",
       "columnType": "text",
-      "computedValue": "{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow[\"site_name\"]))}}",
+      "computedValue": "{{(() => { const tableData = Table1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"site_name\"])) :  currentRow[\"site_name\"] })()}}",
       "enableFilter": true,
       "enableSort": true,
       "fontStyle": "",
