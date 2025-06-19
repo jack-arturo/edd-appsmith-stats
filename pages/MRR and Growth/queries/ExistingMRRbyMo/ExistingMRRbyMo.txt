@@ -1,34 +1,49 @@
 SELECT
-  DATE_FORMAT(months.first_day, '%Y-%m') AS month,
-  COUNT(DISTINCT s.id) AS subscriptions,
-  ROUND( SUM(
+  DATE_FORMAT(first_day, '%Y-%m') AS month,
+  COUNT(DISTINCT subscriptions.id) AS subscriptions,
+  ROUND(SUM(
     CASE
-      WHEN s.created >= DATE_SUB(s.created, INTERVAL 12 MONTH) THEN
-        s.initial_amount / 12
-      ELSE
-        s.recurring_amount / 12
+      WHEN subscriptions.created >= DATE_SUB(subscriptions.created, INTERVAL 12 MONTH)
+      THEN subscriptions.initial_amount / 12
+      ELSE subscriptions.recurring_amount / 12
     END
-  ), 2 ) AS mrr
-FROM
-  wp_edd_subscriptions AS s
-  JOIN (
-    SELECT
-      DATE_FORMAT(DATE_SUB(NOW(), INTERVAL n MONTH), '%Y-%m-01') AS first_day
-    FROM
-      (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15 UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19 UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23) AS n
-  ) AS months
-	ON
-  (s.created < months.first_day AND
-  (s.expiration >= months.first_day))
-WHERE
-  NOT EXISTS (
-    SELECT
-      1
-    FROM
-      wp_edd_orders
-    WHERE
-      ( parent = s.parent_payment_id OR id = s.parent_payment_id )
-			AND status = 'refunded'
-  )
-GROUP BY
-  month;
+  ), 2) AS mrr
+FROM (
+  SELECT DISTINCT
+    s.id,
+    s.created,
+    s.expiration,
+    s.initial_amount,
+    s.recurring_amount,
+    s.parent_payment_id
+  FROM wp_edd_subscriptions s
+  LEFT JOIN (
+    SELECT parent AS parent_payment_id
+    FROM wp_edd_orders
+    WHERE status = 'refunded'
+    AND parent IS NOT NULL
+
+    UNION
+
+    SELECT id AS parent_payment_id
+    FROM wp_edd_orders
+    WHERE status = 'refunded'
+  ) AS refunded
+    ON refunded.parent_payment_id = s.parent_payment_id
+  WHERE refunded.parent_payment_id IS NULL
+) AS subscriptions
+JOIN (
+  SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL seq MONTH), '%Y-%m-01') AS first_day
+  FROM (
+    SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
+    UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
+    UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11
+    UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15
+    UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19
+    UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23
+  ) AS seqs
+) AS months
+  ON subscriptions.created < months.first_day
+  AND subscriptions.expiration >= months.first_day
+GROUP BY month
+ORDER BY month ASC;

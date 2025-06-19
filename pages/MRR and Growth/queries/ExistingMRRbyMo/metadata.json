@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n  DATE_FORMAT(months.first_day, '%Y-%m') AS month,\n  COUNT(DISTINCT s.id) AS subscriptions,\n  ROUND( SUM(\n    CASE\n      WHEN s.created >= DATE_SUB(s.created, INTERVAL 12 MONTH) THEN\n        s.initial_amount / 12\n      ELSE\n        s.recurring_amount / 12\n    END\n  ), 2 ) AS mrr\nFROM\n  wp_edd_subscriptions AS s\n  JOIN (\n    SELECT\n      DATE_FORMAT(DATE_SUB(NOW(), INTERVAL n MONTH), '%Y-%m-01') AS first_day\n    FROM\n      (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15 UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19 UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23) AS n\n  ) AS months\n\tON\n  (s.created < months.first_day AND\n  (s.expiration >= months.first_day))\nWHERE\n  NOT EXISTS (\n    SELECT\n      1\n    FROM\n      wp_edd_orders\n    WHERE\n      ( parent = s.parent_payment_id OR id = s.parent_payment_id )\n\t\t\tAND status = 'refunded'\n  )\nGROUP BY\n  month;",
+      "body": "SELECT\n  DATE_FORMAT(first_day, '%Y-%m') AS month,\n  COUNT(DISTINCT subscriptions.id) AS subscriptions,\n  ROUND(SUM(\n    CASE\n      WHEN subscriptions.created >= DATE_SUB(subscriptions.created, INTERVAL 12 MONTH)\n      THEN subscriptions.initial_amount / 12\n      ELSE subscriptions.recurring_amount / 12\n    END\n  ), 2) AS mrr\nFROM (\n  SELECT DISTINCT\n    s.id,\n    s.created,\n    s.expiration,\n    s.initial_amount,\n    s.recurring_amount,\n    s.parent_payment_id\n  FROM wp_edd_subscriptions s\n  LEFT JOIN (\n    SELECT parent AS parent_payment_id\n    FROM wp_edd_orders\n    WHERE status = 'refunded'\n    AND parent IS NOT NULL\n\n    UNION\n\n    SELECT id AS parent_payment_id\n    FROM wp_edd_orders\n    WHERE status = 'refunded'\n  ) AS refunded\n    ON refunded.parent_payment_id = s.parent_payment_id\n  WHERE refunded.parent_payment_id IS NULL\n) AS subscriptions\nJOIN (\n  SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL seq MONTH), '%Y-%m-01') AS first_day\n  FROM (\n    SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3\n    UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7\n    UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11\n    UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15\n    UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19\n    UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23\n  ) AS seqs\n) AS months\n  ON subscriptions.created < months.first_day\n  AND subscriptions.expiration >= months.first_day\nGROUP BY month\nORDER BY month ASC;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -13,7 +13,7 @@
           "value": false
         }
       ],
-      "timeoutInMillisecond": 10000
+      "timeoutInMillisecond": 20000
     },
     "confirmBeforeExecute": false,
     "datasource": {
